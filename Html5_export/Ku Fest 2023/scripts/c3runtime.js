@@ -4520,6 +4520,8 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Sprite.Acts.SetFlipped,
 		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.System.Acts.AddVar,
+		C3.Behaviors.Pathfinding.Acts.AddObstacle,
+		C3.Behaviors.Pathfinding.Acts.RegenerateMap,
 		C3.Behaviors.Pathfinding.Acts.FindPath,
 		C3.Behaviors.Pathfinding.Cnds.OnPathFound,
 		C3.Behaviors.Pathfinding.Acts.StartMoving,
@@ -4536,7 +4538,11 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Sprite.Acts.ZMoveToObject,
 		C3.Plugins.Sprite.Cnds.OnDestroyed,
 		C3.Plugins.System.Cnds.PickRandom,
+		C3.Plugins.Sprite.Cnds.IsOverlapping,
 		C3.Plugins.System.Cnds.CompareVar,
+		C3.Plugins.Sprite.Acts.SubInstanceVar,
+		C3.Plugins.Sprite.Cnds.CompareY,
+		C3.Plugins.System.Acts.SubVar,
 		C3.Behaviors.Sin.Acts.SetMagnitude
 	];
 };
@@ -4585,12 +4591,18 @@ self.C3_JsPropNameTable = [
 	{en_gun2: 0},
 	{spawner: 0},
 	{enemy_clone: 0},
+	{health: 0},
+	{block: 0},
+	{block_txt: 0},
+	{block2: 0},
 	{speed_booster: 0},
 	{bull_speed: 0},
 	{player_speed: 0},
 	{damage: 0},
 	{gun_accuracy: 0},
-	{layout_counter: 0}
+	{layout_counter: 0},
+	{game_start: 0},
+	{box_value: 0}
 ];
 }
 
@@ -4723,6 +4735,10 @@ self.C3_ExpressionFuncs = [
 			const n0 = p._GetNode(0);
 			return () => C3.clamp(n0.ExpObject(), 0, 65);
 		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => C3.clamp(v0.GetValue(), 0, 50);
+		},
 		() => "game",
 		p => {
 			const n0 = p._GetNode(0);
@@ -4750,6 +4766,10 @@ self.C3_ExpressionFuncs = [
 		() => 90,
 		() => 190,
 		() => 0.3,
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => and("x ", v0.GetValue());
+		},
 		() => "anim",
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
@@ -4777,6 +4797,10 @@ self.C3_ExpressionFuncs = [
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => f0(1, 2, 3);
 		},
+		() => 25,
+		() => 100,
+		() => 75,
+		() => 50,
 		() => -3,
 		() => 0.8,
 		() => 0.2
