@@ -4276,6 +4276,78 @@ opts.tags,opts.startValue,endValue,time,easeIndex,!!opts.destroyOnComplete,!!opt
 }
 
 {
+'use strict';{const C3=self.C3;C3.Behaviors.Flash=class FlashBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts)}Release(){super.Release()}}}{const C3=self.C3;C3.Behaviors.Flash.Type=class FlashType extends C3.SDKBehaviorTypeBase{constructor(behaviorType){super(behaviorType)}Release(){super.Release()}OnCreate(){}}}
+{const C3=self.C3;const C3X=self.C3X;const IBehaviorInstance=self.IBehaviorInstance;C3.Behaviors.Flash.Instance=class FlashInstance extends C3.SDKBehaviorInstanceBase{constructor(behInst,properties){super(behInst);this._onTime=0;this._offTime=0;this._stage=0;this._stageTimeLeft=0;this._timeLeft=0;this._StartTicking()}Release(){super.Release()}_Flash(on,off,dur){this._onTime=on;this._offTime=off;this._stage=1;this._stageTimeLeft=off;this._timeLeft=dur;this._inst.GetWorldInfo().SetVisible(false);this._runtime.UpdateRender()}_StopFlashing(){this._timeLeft=
+0;this._inst.GetWorldInfo().SetVisible(true);this._runtime.UpdateRender()}_IsFlashing(){return this._timeLeft>0}SaveToJson(){return{"on":this._onTime,"off":this._offTime,"s":this._stage,"stl":this._stageTimeLeft,"tl":this._timeLeft}}LoadFromJson(o){this._onTime=o["on"];this._offTime=o["off"];this._stage=o["s"];this._stageTimeLeft=o["stl"];this._timeLeft=o["tl"]===null?Infinity:o["tl"]}Tick(){if(this._timeLeft<=0)return;const dt=this._runtime.GetDt(this._inst);this._timeLeft-=dt;if(this._timeLeft<=
+0){this._timeLeft=0;this._inst.GetWorldInfo().SetVisible(true);this._runtime.UpdateRender();this.DispatchScriptEvent("flashend");return this.DebugTrigger(C3.Behaviors.Flash.Cnds.OnFlashEnded)}this._stageTimeLeft-=dt;if(this._stageTimeLeft<=0){if(this._stage===0){this._inst.GetWorldInfo().SetVisible(false);this._stage=1;this._stageTimeLeft+=this._offTime}else{this._inst.GetWorldInfo().SetVisible(true);this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}GetDebuggerProperties(){const prefix=
+"behaviors.flash.debugger";return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:prefix+".on-time",value:this._onTime,onedit:v=>this._onTime=v},{name:prefix+".off-time",value:this._offTime,onedit:v=>this._offTime=v},{name:prefix+".is-flashing",value:this._timeLeft>0},{name:prefix+".time-left",value:this._timeLeft}]}]}GetScriptInterfaceClass(){return self.IFlashBehaviorInstance}};const map=new WeakMap;self.IFlashBehaviorInstance=class IFlashBehaviorInstance extends IBehaviorInstance{constructor(){super();
+map.set(this,IBehaviorInstance._GetInitInst().GetSdkInstance())}flash(on,off,dur){C3X.RequireFiniteNumber(on);C3X.RequireFiniteNumber(off);C3X.RequireFiniteNumber(dur);map.get(this)._Flash(on,off,dur)}stop(){map.get(this)._StopFlashing()}get isFlashing(){return map.get(this)._IsFlashing()}}}{const C3=self.C3;C3.Behaviors.Flash.Cnds={IsFlashing(){return this._IsFlashing()},OnFlashEnded(){return true}}}{const C3=self.C3;C3.Behaviors.Flash.Acts={Flash(on,off,dur){this._Flash(on,off,dur)},StopFlashing(){this._StopFlashing()}}}
+{const C3=self.C3;C3.Behaviors.Flash.Exps={}};
+
+}
+
+{
+'use strict';{const C3=self.C3;const C3X=self.C3X;const assert=self.assert;const PF_OBSTACLE=2147483647;class MapData{constructor(){this._hcells=0;this._vcells=0;this._cells=null}SetData(hcells,vcells,data){this._hcells=hcells;this._vcells=vcells;this._cells=data}UpdateRegion(cx1,cy1,lenx,leny,cellData){const cells=this._cells;if(!cells)return;for(let x=0;x<lenx;++x)cells[cx1+x].set(cellData[x],cy1)}At(x,y){if(x<0||y<0||x>=this._hcells||y>=this._vcells)return PF_OBSTACLE;return this._cells[x][y]}GetHCells(){return this._hcells}GetVCells(){return this._vcells}}
+class PathfinderState{constructor(behavior,mapKey){this._isReady=false;this._mapData=new MapData;this._moveCost=10;this._isDiagonalsEnabled=true;this._isInPathGroup=false;this._pathGroupId=0;this._pathGroupCost=0;this._pathGroupCellSpread=0;this._pathGroupMaxWorkers=0;this._regenerateFlag=false;this._regenerateRegions=[];this._regeneratePromise=null;this._regenerateResolve=null;this._behavior=behavior;this._mapKey=mapKey;const mapKeyParts=mapKey.split(",");this._runtime=behavior.GetRuntime();this._cellSize=
+parseInt(mapKeyParts[0],10);this._cellBorder=parseInt(mapKeyParts[1],10);this._scriptInterface=new self.IPathfindingMap(this)}SetReady(r){this._isReady=!!r}IsReady(){return this._isReady}GetCellSize(){return this._cellSize}GetCellBorder(){return this._cellBorder}GetHCells(){return this._mapData.GetHCells()}GetVCells(){return this._mapData.GetVCells()}GetMapData(){return this._mapData}GetRuntime(){return this._runtime}GetBehavior(){return this._behavior}GetMapKey(){return this._mapKey}SetMoveCost(c){this._moveCost=
+Math.floor(c)}GetMoveCost(){return this._moveCost}SetDiagonalsEnabled(e){this._isDiagonalsEnabled=!!e}IsDiagonalsEnabled(){return this._isDiagonalsEnabled}SetRegenerateFlag(r){this._regenerateFlag=!!r}IsRegenerateFlagSet(){return this._regenerateFlag}GetRegenerateRegions(){return this._regenerateRegions}GetRegeneratePromise(){if(!this._regeneratePromise)this._regeneratePromise=new Promise(resolve=>this._regenerateResolve=resolve);return this._regeneratePromise}_ResolveRegeneratePromise(){if(this._regenerateResolve)this._regenerateResolve();
+this._regeneratePromise=null;this._regenerateResolve=null}AddRegenerateRegion(startX,startY,endX,endY){if(this.IsRegenerateFlagSet())return true;const cellSize=this._cellSize;const cellBorder=this._cellBorder;const hcells=this._mapData.GetHCells();const vcells=this._mapData.GetVCells();const x1=Math.min(startX,endX)-cellBorder;const y1=Math.min(startY,endY)-cellBorder;const x2=Math.max(startX,endX)+cellBorder;const y2=Math.max(startY,endY)+cellBorder;const cellX1=Math.max(Math.floor(x1/cellSize),
+0);const cellY1=Math.max(Math.floor(y1/cellSize),0);const cellX2=Math.min(Math.ceil(x2/cellSize),hcells);const cellY2=Math.min(Math.ceil(y2/cellSize),vcells);if(cellX1>=cellX2||cellY1>=cellY2)return false;this.GetRegenerateRegions().push([cellX1,cellY1,cellX2,cellY2]);return true}AddObjectRegenerateRegion(objectClass){const instances=objectClass.GetCurrentSol().GetInstances();let didAddRegion=false;for(const inst of instances){const wi=inst.GetWorldInfo();if(!wi)continue;const bbox=wi.GetBoundingBox();
+const result=this.AddRegenerateRegion(bbox.getLeft(),bbox.getTop(),bbox.getRight(),bbox.getBottom());didAddRegion=didAddRegion||result}return didAddRegion}StartPathGroup(baseCost,cellSpread,maxWorkers){if(this._isInPathGroup)return;this._isInPathGroup=true;this._pathGroupId++;maxWorkers=Math.min(maxWorkers,this._runtime.GetMaxNumJobWorkers());const pathCost=baseCost*maxWorkers;this._pathGroupCost=pathCost;this._pathGroupCellSpread=cellSpread;this._pathGroupMaxWorkers=maxWorkers}EndPathGroup(){this._isInPathGroup=
+false}IsInPathGroup(){return this._isInPathGroup}GetPathGroupId(){return this._pathGroupId}GetPathGroupCost(){return this._pathGroupCost}GetPathGroupCellSpread(){return this._pathGroupCellSpread}GetPathGroupMaxWorkers(){return this._pathGroupMaxWorkers}GetScriptInterface(){return this._scriptInterface}}C3.Behaviors.Pathfinding=class PathfindingBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts);this._mapState=new Map;this._runtime.AddLoadPromise(this._runtime.AddJobWorkerScripts(["redblackset.js",
+"pathfind.js"]));this._runtime.Dispatcher().addEventListener("beforelayoutchange",()=>this._OnBeforeLayoutChange())}Release(){super.Release()}GetMapKey(cellSize,cellBorder){return cellSize+","+cellBorder}GetPathfinderState(mapKey){let ret=this._mapState.get(mapKey);if(!ret){ret=new PathfinderState(this,mapKey);this._mapState.set(mapKey,ret)}return ret}UpdateCellData(mapKey,hcells,vcells,cellData){const state=this.GetPathfinderState(mapKey);this._runtime.BroadcastJob("PFCellData",{"mapKey":mapKey,
+"hcells":hcells,"vcells":vcells,"cellData":cellData});state.SetReady(true);state.GetMapData().SetData(hcells,vcells,cellData);state.SetRegenerateFlag(false)}UpdateRegion(mapKey,cx1,cy1,lenx,leny,cellData){this._runtime.BroadcastJob("PFUpdateRegion",{"mapKey":mapKey,"cx1":cx1,"cy1":cy1,"lenx":lenx,"leny":leny,"cellData":cellData});this.GetPathfinderState(mapKey).GetMapData().UpdateRegion(cx1,cy1,lenx,leny,cellData)}FindPath(mapKey,cellX,cellY,destCellX,destCellY,directMovementMode){const state=this.GetPathfinderState(mapKey);
+let pathGroupData=null;let maxWorkers=null;if(state.IsInPathGroup()){maxWorkers=state.GetPathGroupMaxWorkers();pathGroupData={"id":state.GetPathGroupId(),"cost":state.GetPathGroupCost(),"cellSpread":state.GetPathGroupCellSpread()}}return this._runtime.AddJob("PFFindPath",{"mapKey":mapKey,"cellX":cellX,"cellY":cellY,"destCellX":destCellX,"destCellY":destCellY,"moveCost":state.GetMoveCost(),"diagonalsEnabled":state.IsDiagonalsEnabled(),"directMovementMode":directMovementMode,"pathGroup":pathGroupData},
+null,maxWorkers)}_OnBeforeLayoutChange(){for(const state of this._mapState.values()){state.SetReady(false);state.GetMapData().SetData(0,0,null);state.SetRegenerateFlag(true)}this._runtime.BroadcastJob("PFResetAllCellData")}};const map=new WeakMap;self.IPathfindingMap=class IPathfindingMap{constructor(state){map.set(this,state);Object.defineProperties(this,{cellSize:{value:state.GetCellSize(),writable:false},cellBorder:{value:state.GetCellBorder(),writable:false}})}get widthInCells(){return map.get(this).GetHCells()}get heightInCells(){return map.get(this).GetVCells()}isCellObstacle(x,
+y){C3X.RequireFiniteNumber(x);C3X.RequireFiniteNumber(y);return map.get(this).GetMapData().At(x,y)===PF_OBSTACLE}set moveCost(c){C3X.RequireFiniteNumber(c);map.get(this).SetMoveCost(c)}get moveCost(){return map.get(this).GetMoveCost()}set isDiagonalsEnabled(e){map.get(this).SetDiagonalsEnabled(e)}get isDiagonalsEnabled(){return map.get(this).IsDiagonalsEnabled()}async regenerateMap(){const state=map.get(this);state.SetRegenerateFlag(true);await state.GetRegeneratePromise()}async regenerateRegion(startX,
+startY,endX,endY){const state=map.get(this);if(state.AddRegenerateRegion(startX,startY,endX,endY))await state.GetRegeneratePromise()}async regenerateObjectRegion(iObjectClass){const state=map.get(this);const objectClass=state.GetRuntime()._UnwrapIObjectClass(iObjectClass);if(state.AddObjectRegenerateRegion(objectClass))await state.GetRegeneratePromise()}startPathGroup(baseCost=1,cellSpread=1,maxWorkers=1){C3X.RequireFiniteNumber(baseCost);C3X.RequireFiniteNumber(cellSpread);C3X.RequireFiniteNumber(maxWorkers);
+baseCost=Math.floor(baseCost);cellSpread=Math.floor(cellSpread);maxWorkers=Math.floor(maxWorkers);if(maxWorkers<=0)throw new Error("invalid max workers");if(cellSpread<=0)throw new Error("invalid cell spread");map.get(this).StartPathGroup(baseCost,cellSpread,maxWorkers)}endPathGroup(){map.get(this).EndPathGroup()}}}
+{const C3=self.C3;C3.Behaviors.Pathfinding.Type=class PathfindingType extends C3.SDKBehaviorTypeBase{constructor(behaviorType){super(behaviorType);this._obstacleTypes=[];this._costTypes=[]}Release(){super.Release()}OnCreate(){}GetObstacleTypes(){return this._obstacleTypes}GetCostTypes(){return this._costTypes}}}
+{const C3=self.C3;const C3X=self.C3X;const IBehaviorInstance=self.IBehaviorInstance;const CELL_SIZE=0;const CELL_BORDER=1;const OBSTACLES=2;const MAX_SPEED=3;const ACCELERATION=4;const DEACCELERATION=5;const ROTATE_SPEED=6;const ROTATE_ENABLE=7;const DIAGONALS_ENABLE=8;const DIRECT_MOVEMENT=9;const ENABLE=10;const PF_CLEAR=0;const PF_OBSTACLE=2147483647;const tempRect=new C3.Rect;const candidates=[];C3.Behaviors.Pathfinding.Instance=class PathfindingInstance extends C3.SDKBehaviorInstanceBase{constructor(behInst,
+properties){super(behInst);const wi=this.GetWorldInfo();this._cellSize=30;this._cellBorder=-1;this._obstacles=0;this._maxSpeed=200;this._acc=1E3;this._dec=2E3;this._av=C3.toRadians(135);this._isRotateEnabled=true;this._directMovementMode=1;this._isEnabled=true;this._isMoving=false;this._movingFromStopped=false;this._firstTickMovingWhileMoving=false;this._hasPath=false;this._moveNode=0;this._a=wi.GetAngle();this._lastKnownAngle=wi.GetAngle();this._s=0;this._rabbitX=0;this._rabbitY=0;this._rabbitA=
+0;this._myHcells=0;this._myVcells=0;this._myPath=[];this._delayFindPath=false;this._delayFindPathResolves=[];this._delayPathX=0;this._delayPathY=0;this._isDestroyed=false;this._isCalculating=false;this._calcPathX=0;this._calcPathY=0;this._isFirstRun=true;let isDiagonalsEnabled=true;if(properties){this._cellSize=properties[CELL_SIZE];this._cellBorder=properties[CELL_BORDER];this._obstacles=properties[OBSTACLES];this._maxSpeed=properties[MAX_SPEED];this._acc=properties[ACCELERATION];this._dec=properties[DEACCELERATION];
+this._av=C3.toRadians(properties[ROTATE_SPEED]);this._isRotateEnabled=!!properties[ROTATE_ENABLE];isDiagonalsEnabled=!!properties[DIAGONALS_ENABLE];this._directMovementMode=properties[DIRECT_MOVEMENT];this._isEnabled=!!properties[ENABLE]}const layout=wi.GetLayout();this._myHcells=Math.ceil(layout.GetWidth()/this._cellSize);this._myVcells=Math.ceil(layout.GetHeight()/this._cellSize);const rt=this._runtime.Dispatcher();this._disposables=new C3.CompositeDisposable(C3.Disposable.From(rt,"afterload",e=>
+this._OnAfterLoad()));if(this._cellSize<3)this._cellSize=3;if(this._isEnabled){this._StartTicking();this._StartTicking2()}this.GetMyState().SetDiagonalsEnabled(isDiagonalsEnabled)}Release(){this._isDestroyed=true;super.Release()}GetMapKey(){return this.GetBehavior().GetMapKey(this._cellSize,this._cellBorder)}GetMyState(){return this.GetBehavior().GetPathfinderState(this.GetMapKey())}SaveToJson(){const state=this.GetMyState();const ret={"cs":this._cellSize,"cb":this._cellBorder,"ms":this._maxSpeed,
+"acc":this._acc,"dec":this._dec,"av":this._av,"re":this._isRotateEnabled,"mc":state.GetMoveCost(),"de":state.IsDiagonalsEnabled(),"o":this._obstacles,"im":this._isMoving,"mfs":this._movingFromStopped,"ftmwm":this._firstTickMovingWhileMoving,"hp":this._hasPath,"mn":this._moveNode,"a":this._a,"lka":this._lastKnownAngle,"s":this._s,"rx":this._rabbitX,"ry":this._rabbitY,"ra":this._rabbitA,"hc":this._myHcells,"vc":this._myVcells,"p":this._myPath,"dmm":this._directMovementMode,"e":this._isEnabled,"fr":this._isFirstRun,
+"obs":this.GetSdkType().GetObstacleTypes().map(t=>t.GetSID()),"costs":this.GetSdkType().GetCostTypes().map(c=>({"sid":c.objectClass.GetSID(),"cost":c.cost}))};if(this._isCalculating){ret["dfp"]=true;ret["dfx"]=this._calcPathX;ret["dfy"]=this._calcPathY}else{ret["dfp"]=this._delayFindPath;ret["dfx"]=this._delayPathX;ret["dfy"]=this._delayPathY}return ret}LoadFromJson(o){this._cellSize=o["cs"];this._cellBorder=o["cb"];this._maxSpeed=o["ms"];this._acc=o["acc"];this._dec=o["dec"];this._av=o["av"];this._isRotateEnabled=
+o["re"];const isDiagonalsEnabled=o["de"];const moveCost=o.hasOwnProperty("mc")?o["mc"]:10;this._obstacles=o["o"];this._isMoving=o["im"];this._movingFromStopped=o["mfs"];this._firstTickMovingWhileMoving=o["ftmwm"];this._hasPath=o["hp"];this._moveNode=o["mn"];this._a=o["a"];this._lastKnownAngle=o["lka"];this._s=o["s"];this._rabbitX=o["rx"];this._rabbitY=o["ry"];this._rabbitA=o["ra"];this._myHcells=o["hc"];this._myVcells=o["vc"];this._myPath=o["p"];this._SetEnabled(o["e"]);this._isFirstRun=o["fr"];if(o.hasOwnProperty("dmm"))this._directMovementMode=
+o["dmm"];this._delayFindPath=o["dfp"];C3.clearArray(this._delayFindPathResolves);this._delayPathX=o["dfx"];this._delayPathY=o["dfy"];const obstacleTypes=this.GetSdkType().GetObstacleTypes();C3.clearArray(obstacleTypes);for(const sid of o["obs"]){const objectClass=this._runtime.GetObjectClassBySID(sid);if(objectClass)obstacleTypes.push(objectClass)}const costTypes=this.GetSdkType().GetCostTypes();C3.clearArray(costTypes);for(const c of costTypes){const objectClass=this._runtime.GetObjectClassBySID(c["sid"]);
+if(objectClass)costTypes.push({objectClass,cost:c["cost"]})}if(this._cellSize<3)this._cellSize=3;const state=this.GetMyState();state.SetMoveCost(moveCost);state.SetDiagonalsEnabled(isDiagonalsEnabled)}_OnAfterLoad(){this.GetMyState().SetRegenerateFlag(true)}Tick(){if(!this._isEnabled||!this._isMoving)return;const dt=this._runtime.GetDt(this._inst);const wi=this._inst.GetWorldInfo();if(this._isRotateEnabled&&wi.GetAngle()!==this._lastKnownAngle)this._a=wi.GetAngle();const myPath=this._myPath;const rabbitAheadDist=
+Math.min(this._maxSpeed*.4,Math.abs(wi.GetWidth())*2);const rabbitSpeed=Math.max(this._s*1.5,30);let nextX=0;let nextY=0;if(this._moveNode<myPath.length){nextX=myPath[this._moveNode].x;nextY=myPath[this._moveNode].y;const dist=C3.distanceTo(this._rabbitX,this._rabbitY,nextX,nextY);if(dist<3*rabbitSpeed*dt){this._moveNode++;this._rabbitX=nextX;this._rabbitY=nextY;if(this._moveNode<myPath.length){nextX=myPath[this._moveNode].x;nextY=myPath[this._moveNode].y}}}else{nextX=myPath.at(-1).x;nextY=myPath.at(-1).y}this._rabbitA=
+C3.angleTo(this._rabbitX,this._rabbitY,nextX,nextY);const distToRabbit=C3.distanceTo(wi.GetX(),wi.GetY(),this._rabbitX,this._rabbitY);if(distToRabbit<rabbitAheadDist&&this._moveNode<myPath.length){let moveDist=0;if(this._firstTickMovingWhileMoving){moveDist=rabbitAheadDist;this._firstTickMovingWhileMoving=false}else moveDist=rabbitSpeed*dt;this._rabbitX+=Math.cos(this._rabbitA)*moveDist;this._rabbitY+=Math.sin(this._rabbitA)*moveDist}const targetAngle=C3.angleTo(wi.GetX(),wi.GetY(),this._rabbitX,
+this._rabbitY);const da=C3.angleDiff(this._a,targetAngle);const distToFinish=C3.distanceTo(wi.GetX(),wi.GetY(),myPath.at(-1).x,myPath.at(-1).y);const decelDist=this._maxSpeed*this._maxSpeed/(2*this._dec);if(distToRabbit>1){this._a=C3.angleRotate(this._a,targetAngle,this._av*dt);let curMaxSpeed=0;if(C3.toDegrees(da)<=.5)curMaxSpeed=this._maxSpeed;else if(C3.toDegrees(da)>=120||this._movingFromStopped&&this._moveNode===0)this._movingFromStopped=true;else{const t=da/this._av;const dist=C3.distanceTo(wi.GetX(),
+wi.GetY(),this._rabbitX,this._rabbitY);const r=dist/(2*Math.sin(da));const curveDist=r*da;curMaxSpeed=C3.clamp(curveDist/t,0,this._maxSpeed)}if(distToFinish<decelDist)curMaxSpeed=Math.min(curMaxSpeed,distToFinish/decelDist*this._maxSpeed+this._maxSpeed/40);this._s+=this._acc*dt;if(this._s>curMaxSpeed)this._s=curMaxSpeed}wi.OffsetXY(Math.cos(this._a)*this._s*dt,Math.sin(this._a)*this._s*dt);if(this._isRotateEnabled){wi.SetAngle(this._a);this._lastKnownAngle=wi.GetAngle()}wi.SetBboxChanged();if(this._moveNode===
+myPath.length&&C3.distanceTo(wi.GetX(),wi.GetY(),nextX,nextY)<Math.max(3*this._s*dt,10)){this._isMoving=false;this._hasPath=false;this._moveNode=0;this._s=0;this.DispatchScriptEvent("arrived");return this.DebugTrigger(C3.Behaviors.Pathfinding.Cnds.OnArrived)}}Tick2(){if(!this._isEnabled)return;this._MaybeGenerateMap();this._DoDelayFindPath()}_MaybeGenerateMap(){const state=this.GetMyState();const regenerateRegions=state.GetRegenerateRegions();if(state.IsReady()&&!state.IsRegenerateFlagSet()&&!regenerateRegions.length)return;
+if(!state.IsReady()||state.IsRegenerateFlagSet())this._GenerateFullMap();else if(regenerateRegions.length)this._RegenerateRegions(regenerateRegions);C3.clearArray(regenerateRegions);state._ResolveRegeneratePromise()}_GenerateFullMap(){const layout=this.GetWorldInfo().GetLayout();this._myHcells=Math.ceil(layout.GetWidth()/this._cellSize);this._myVcells=Math.ceil(layout.GetHeight()/this._cellSize);const cellData=C3.MakeFilledArray(this._myHcells,()=>new Int32Array(this._myVcells));const leny=this._myVcells;
+for(let x=0,lenx=this._myHcells;x<lenx;++x)for(let y=0;y<leny;++y)cellData[x][y]=this._QueryCellCollision(x,y);this.GetBehavior().UpdateCellData(this.GetMapKey(),this._myHcells,this._myVcells,cellData)}_RegenerateRegions(regions){for(const [cx1,cy1,cx2,cy2]of regions)this._RegenerateRegion(cx1,cy1,cx2,cy2)}_RegenerateRegion(cx1,cy1,cx2,cy2){const lenx=cx2-cx1;const leny=cy2-cy1;const cellData=C3.MakeFilledArray(lenx,()=>new Int32Array(leny));for(let x=0;x<lenx;++x)for(let y=0;y<leny;++y)cellData[x][y]=
+this._QueryCellCollision(cx1+x,cy1+y);this.GetBehavior().UpdateRegion(this.GetMapKey(),cx1,cy1,lenx,leny,cellData)}_QueryCellCollision(x,y){const wi=this.GetWorldInfo();const layer=wi.GetLayer();const cellSize=this._cellSize;const cellBorder=this._cellBorder;const collisionEngine=this._runtime.GetCollisionEngine();tempRect.set(x*cellSize-cellBorder,y*cellSize-cellBorder,(x+1)*cellSize+cellBorder,(y+1)*cellSize+cellBorder);if(this._obstacles===0){if(collisionEngine.TestRectOverlapSolid(tempRect))return PF_OBSTACLE}else{collisionEngine.GetObjectClassesCollisionCandidates(layer,
+this._sdkType.GetObstacleTypes(),tempRect,candidates);for(let i=0,len=candidates.length;i<len;++i)if(collisionEngine.TestRectOverlap(tempRect,candidates[i])){C3.clearArray(candidates);return PF_OBSTACLE}C3.clearArray(candidates)}let ret=0;const costTypes=this._sdkType.GetCostTypes();for(const {objectClass,cost}of costTypes){collisionEngine.GetCollisionCandidates(layer,objectClass,tempRect,candidates);if(candidates.length>0){const seenCandidates=new Set;for(let i=0,len=candidates.length;i<len;++i){const candidate=
+candidates[i];if(seenCandidates.has(candidate))continue;if(collisionEngine.TestRectOverlap(tempRect,candidate)){ret+=cost;seenCandidates.add(candidate)}}}C3.clearArray(candidates)}return Math.min(ret,PF_OBSTACLE)}async _DoDelayFindPath(){if(this._delayFindPath&&!this._isDestroyed){this._delayFindPath=false;const resolves=this._delayFindPathResolves;this._delayFindPathResolves=[];const wi=this.GetWorldInfo();await this._DoFindPath(wi.GetX(),wi.GetY(),this._delayPathX,this._delayPathY);for(const resolve of resolves)resolve()}}_FindNearestNonObstacleCell(mapData,
+cellX,cellY){let bestDist=Infinity;let bestX=0;let bestY=0;for(let x=0,lenx=this._myHcells;x<lenx;++x)for(let y=0,leny=this._myVcells;y<leny;++y)if(mapData.At(x,y)!==PF_OBSTACLE){const dx=cellX-x;const dy=cellY-y;const curDist=dx*dx+dy*dy;if(curDist<bestDist){bestDist=curDist;bestX=x;bestY=y}}return[bestX,bestY]}async _DoFindPath(startX,startY,endX,endY,calledFromScript=false){const state=this.GetMyState();if(!state.IsReady())return false;const mapData=state.GetMapData();this._isCalculating=true;
+this._calcPathX=endX;this._calcPathY=endY;const cellSize=this._cellSize;const cellX=Math.floor(startX/cellSize);const cellY=Math.floor(startY/cellSize);let destCellX=Math.floor(endX/cellSize);let destCellY=Math.floor(endY/cellSize);if(mapData.At(destCellX,destCellY)===PF_OBSTACLE)[destCellX,destCellY]=this._FindNearestNonObstacleCell(mapData,destCellX,destCellY);const path=await this.GetBehavior().FindPath(this.GetMapKey(),cellX,cellY,destCellX,destCellY,this._directMovementMode);if(this._isDestroyed)return;
+this._isCalculating=false;this._moveNode=0;if(path===null){C3.clearArray(this._myPath);this._hasPath=false;this._isMoving=false;if(!calledFromScript)await this.TriggerAsync(C3.Behaviors.Pathfinding.Cnds.OnFailedToFindPath)}else{const cellSize=this._cellSize;this._myPath=path.map(n=>({x:(n.x+.5)*cellSize,y:(n.y+.5)*cellSize}));this._hasPath=this._myPath.length>0;if(!calledFromScript)await this.TriggerAsync(C3.Behaviors.Pathfinding.Cnds.OnPathFound)}if(!calledFromScript)this._DoDelayFindPath()}_GetPath(){return this._myPath}GetPropertyValueByIndex(index){switch(index){case MAX_SPEED:return this._GetMaxSpeed();
+case ACCELERATION:return this._GetAcceleration();case DEACCELERATION:return this._GetDeceleration();case ROTATE_SPEED:return C3.toDegrees(this._GetRotateSpeed());case ROTATE_ENABLE:return this._isRotateEnabled;case DIAGONALS_ENABLE:return this.GetMyState().IsDiagonalsEnabled();case ENABLE:return this._IsEnabled()}}SetPropertyValueByIndex(index,value){switch(index){case MAX_SPEED:this._SetMaxSpeed(value);break;case ACCELERATION:this._SetAcceleration(value);break;case DEACCELERATION:this._SetDeceleration(value);
+break;case ROTATE_SPEED:this._SetRotateSpeed(C3.toRadians(value));break;case ROTATE_ENABLE:this._isRotateEnabled=!!value;break;case DIAGONALS_ENABLE:this.GetMyState().SetDiagonalsEnabled(!!value);break;case ENABLE:this._SetEnabled(value);break}}async _FindPath(x,y){if(!this._isEnabled)return;const state=this.GetMyState();if(this._isCalculating||!state.IsReady())await new Promise(resolve=>{this._delayFindPath=true;this._delayFindPathResolves.push(resolve);this._delayPathX=x;this._delayPathY=y});else{const wi=
+this.GetWorldInfo();await this._DoFindPath(wi.GetX(),wi.GetY(),x,y)}}_StartMoving(){if(!this._hasPath)return;if(this._isMoving)this._firstTickMovingWhileMoving=true;this._movingFromStopped=!this._isMoving;this._isMoving=true;const wi=this.GetWorldInfo();this._rabbitX=wi.GetX();this._rabbitY=wi.GetY();this._rabbitA=wi.GetAngle()}_Stop(){this._isMoving=false}_SetMaxSpeed(s){this._maxSpeed=s}_GetMaxSpeed(){return this._maxSpeed}_SetSpeed(s){this._s=C3.clamp(s,0,this._maxSpeed)}_GetSpeed(){return this._IsMoving()?
+this._s:0}_SetAcceleration(a){this._acc=a}_GetAcceleration(){return this._acc}_SetDeceleration(d){this._dec=d}_GetDeceleration(){return this._dec}_SetRotateSpeed(r){this._av=r}_GetRotateSpeed(){return this._av}_IsCalculatingPath(){return this._isCalculating}_IsMoving(){return this._isMoving}_HasPath(){return this._hasPath}_GetMovingAngle(){return this._a}_GetNodeCount(){return this._myPath.length}_GetCurrentNode(){return this._moveNode}_GetNodeAt(i){i=Math.floor(i);if(i<0||i>=this._myPath.length)return null;
+else return this._myPath[i]}_GetNodeXAt(i){const n=this._GetNodeAt(i);return n?n.x:0}_GetNodeYAt(i){const n=this._GetNodeAt(i);return n?n.y:0}_SetDirectMovementMode(m){if(m<0||m>2)throw new Error("invalid direct movement mode");this._directMovementMode=m}_GetDirectMovementMode(){return this._directMovementMode}_SetEnabled(e){this._isEnabled=!!e;if(this._isEnabled){this._StartTicking();this._StartTicking2()}else{this._StopTicking();this._StopTicking2()}}_IsEnabled(){return this._isEnabled}GetDebuggerProperties(){const prefix=
+"behaviors.pathfinding";return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:prefix+".debugger.has-path",value:this._hasPath},{name:prefix+".debugger.is-calculating-path",value:this._IsCalculatingPath()},{name:prefix+".debugger.is-moving",value:this._IsMoving()},{name:prefix+".debugger.speed",value:this._GetSpeed(),onedit:v=>this._SetSpeed(v)},{name:prefix+".debugger.angle-of-motion",value:C3.toDegrees(this._a),onedit:v=>this._a=C3.toRadians(v)},{name:prefix+".properties.max-speed.name",
+value:this._GetMaxSpeed(),onedit:v=>this._SetMaxSpeed(v)},{name:prefix+".properties.acceleration.name",value:this._GetAcceleration(),onedit:v=>this._SetAcceleration(v)},{name:prefix+".properties.deceleration.name",value:this._GetDeceleration(),onedit:v=>this._SetDeceleration(v)},{name:prefix+".properties.rotate-speed.name",value:C3.toDegrees(this._GetRotateSpeed()),onedit:v=>this._SetRotateSpeed(C3.toRadians(v))},{name:prefix+".properties.enabled.name",value:this._IsEnabled(),onedit:v=>this._SetEnabled(v)}]}]}GetScriptInterfaceClass(){return self.IPathfindingBehaviorInstance}};
+const map=new WeakMap;const DIRECT_MOVEMENT_STRS=["none","to-destination","anywhere-along-path"];self.IPathfindingBehaviorInstance=class IPathfindingBehaviorInstance extends IBehaviorInstance{constructor(){super();const sdkInst=IBehaviorInstance._GetInitInst().GetSdkInstance();map.set(this,sdkInst);Object.defineProperties(this,{map:{value:sdkInst.GetMyState().GetScriptInterface(),writable:false}})}async findPath(x,y){C3X.RequireFiniteNumber(x);C3X.RequireFiniteNumber(y);const inst=map.get(this);await inst._FindPath(x,
+y);return inst._HasPath()}async calculatePath(fromX,fromY,toX,toY){C3X.RequireFiniteNumber(fromX);C3X.RequireFiniteNumber(fromY);C3X.RequireFiniteNumber(toX);C3X.RequireFiniteNumber(toY);const inst=map.get(this);await inst._DoFindPath(fromX,fromY,toX,toY,true);return inst._HasPath()}startMoving(){map.get(this)._StartMoving()}stop(){map.get(this)._Stop()}set maxSpeed(s){C3X.RequireFiniteNumber(s);map.get(this)._SetMaxSpeed(s)}get maxSpeed(){return map.get(this)._GetMaxSpeed()}set speed(s){C3X.RequireFiniteNumber(s);
+map.get(this)._SetSpeed(s)}get speed(){return map.get(this)._GetSpeed()}set acceleration(a){C3X.RequireFiniteNumber(a);map.get(this)._SetAcceleration(a)}get acceleration(){return map.get(this)._GetAcceleration()}set deceleration(d){C3X.RequireFiniteNumber(d);map.get(this)._SetDeceleration(d)}get deceleration(){return map.get(this)._GetAcceleration()}set rotateSpeed(r){C3X.RequireFiniteNumber(r);map.get(this)._SetRotateSpeed(r)}get rotateSpeed(){return map.get(this)._GetRotateSpeed()}get isCalculatingPath(){return map.get(this)._IsCalculatingPath()}get isMoving(){return map.get(this)._IsMoving()}get currentNode(){return map.get(this)._GetCurrentNode()}getNodeCount(){return map.get(this)._GetNodeCount()}getNodeXAt(i){C3X.RequireFiniteNumber(i);
+return map.get(this)._GetNodeXAt(i)}getNodeYAt(i){C3X.RequireFiniteNumber(i);return map.get(this)._GetNodeYAt(i)}getNodeAt(i){C3X.RequireFiniteNumber(i);const n=map.get(this)._GetNodeAt(i);return n?[n.x,n.y]:[0,0]}*nodes(){const binst=map.get(this);for(let i=0,len=binst._GetNodeCount();i<len;++i){const n=binst._GetNodeAt(i);yield[n.x,n.y]}}set directMovementMode(s){C3X.RequireString(s);const m=DIRECT_MOVEMENT_STRS.indexOf(s);if(m===-1)throw new Error(`invalid direct movement mode '${s}'`);map.get(this)._SetDirectMovementMode(m)}get directMovementMode(){return DIRECT_MOVEMENT_STRS[map.get(this)._GetDirectMovementMode()]}set isEnabled(e){map.get(this)._SetEnabled(!!e)}get isEnabled(){return map.get(this)._IsEnabled()}}}
+{const C3=self.C3;const PF_OBSTACLE=2147483647;C3.Behaviors.Pathfinding.Cnds={OnPathFound(){return true},OnFailedToFindPath(){return true},IsCellObstacle(x,y){return this.GetMyState().GetMapData().At(x,y)===PF_OBSTACLE},IsCalculatingPath(){return this._IsCalculatingPath()},IsMoving(){return this._IsMoving()},OnArrived(){return true},CompareSpeed(cmp,x){return C3.compare(this._IsMoving()?this._GetSpeed():0,cmp,x)},DiagonalsEnabled(){return this.GetMyState().IsDiagonalsEnabled()},IsEnabled(){return this._IsEnabled()}}}
+{const C3=self.C3;C3.Behaviors.Pathfinding.Acts={FindPath(x,y){return this._FindPath(x,y)},StartMoving(){this._StartMoving()},Stop(){this._Stop()},SetEnabled(e){this._SetEnabled(e!==0)},AddObstacle(objectClass){const obstacleTypes=this.GetSdkType().GetObstacleTypes();if(obstacleTypes.includes(objectClass))return;for(const t of obstacleTypes)if(t.IsFamily()&&t.FamilyHasMember(objectClass))return;obstacleTypes.push(objectClass)},ClearObstacles(){C3.clearArray(this._sdkType.GetObstacleTypes())},SetMoveCost(cost){this.GetMyState().SetMoveCost(cost)},
+AddCost(objectClass,cost){const costTypes=this.GetSdkType().GetCostTypes();for(const o of costTypes){const t=o.objectClass;if(t===objectClass)return;if(t.IsFamily()&&t.FamilyHasMember(objectClass))return}costTypes.push({objectClass,cost})},ClearCost(){C3.clearArray(this._sdkType.GetCostTypes())},StartPathGroup(baseCost,cellSpread,maxWorkers){baseCost=Math.floor(baseCost);cellSpread=Math.floor(cellSpread);maxWorkers=Math.floor(maxWorkers);if(baseCost<=0||cellSpread<=0||maxWorkers<=0)return;const state=
+this.GetMyState();if(state)state.StartPathGroup(baseCost,cellSpread,maxWorkers)},EndPathGroup(){const state=this.GetMyState();if(state)state.EndPathGroup()},SetMaxSpeed(s){this._SetMaxSpeed(s)},SetSpeed(s){this._SetSpeed(s)},SetAcc(a){this._SetAcceleration(a)},SetDec(d){this._SetDeceleration(d)},SetRotateSpeed(r){this._SetRotateSpeed(C3.toRadians(r))},SetDiagonalsEnabled(e){this.GetMyState().SetDiagonalsEnabled(e!==0)},SetDirectMovement(m){this._SetDirectMovementMode(m)},async RegenerateMap(){const state=
+this.GetMyState();state.SetRegenerateFlag(true);await state.GetRegeneratePromise()},async RegenerateRegion(startX,startY,endX,endY){const state=this.GetMyState();if(state.AddRegenerateRegion(startX,startY,endX,endY))await state.GetRegeneratePromise()},async RegenerateObjectRegion(objectClass){if(!objectClass)return;const state=this.GetMyState();if(state.AddObjectRegenerateRegion(objectClass))await state.GetRegeneratePromise()}}}
+{const C3=self.C3;C3.Behaviors.Pathfinding.Exps={NodeCount(){return this._GetNodeCount()},NodeXAt(i){return this._GetNodeXAt(i)},NodeYAt(i){return this._GetNodeYAt(i)},CellSize(){return this._cellSize},RabbitX(){return this._rabbitX},RabbitY(){return this._rabbitY},MaxSpeed(){return this._GetMaxSpeed()},Acceleration(){return this._GetAcceleration()},Deceleration(){return this._GetDeceleration()},RotateSpeed(){return C3.toDegrees(this._GetRotateSpeed())},MovingAngle(){return C3.toDegrees(this._GetMovingAngle())},
+CurrentNode(){return this._GetCurrentNode()},Speed(){return this._GetSpeed()}}};
+
+}
+
+{
 const C3 = self.C3;
 self.C3_GetObjectRefTable = function () {
 	return [
@@ -4290,13 +4362,14 @@ self.C3_GetObjectRefTable = function () {
 		C3.Behaviors.Tween,
 		C3.Plugins.TiledBg,
 		C3.Plugins.Text,
+		C3.Behaviors.Flash,
+		C3.Behaviors.Pathfinding,
 		C3.Plugins.System.Cnds.TriggerOnce,
 		C3.Plugins.Sprite.Acts.AddChild,
 		C3.Plugins.System.Cnds.Repeat,
 		C3.Plugins.System.Acts.CreateObject,
 		C3.Plugins.System.Exps.int,
 		C3.Plugins.System.Exps.random,
-		C3.Plugins.Sprite.Acts.MoveToBottom,
 		C3.Plugins.Keyboard.Cnds.OnKey,
 		C3.Plugins.Sprite.Acts.SetMirrored,
 		C3.Behaviors.EightDir.Cnds.IsMoving,
@@ -4311,6 +4384,8 @@ self.C3_GetObjectRefTable = function () {
 		C3.Behaviors.EightDir.Acts.SetAcceleration,
 		C3.Plugins.Sprite.Acts.MoveToTop,
 		C3.Plugins.Text.Acts.SetText,
+		C3.Plugins.Sprite.Acts.SetWidth,
+		C3.Plugins.Sprite.Exps.Width,
 		C3.Plugins.Mouse.Cnds.IsButtonDown,
 		C3.Plugins.System.Cnds.Every,
 		C3.Plugins.Sprite.Acts.Spawn,
@@ -4327,18 +4402,33 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Sprite.Cnds.CompareInstanceVar,
 		C3.Plugins.Sprite.Exps.AnimationFrame,
 		C3.Plugins.Sprite.Acts.Destroy,
+		C3.Plugins.Sprite.Acts.MoveToBottom,
+		C3.Plugins.Sprite.Cnds.PickChildren,
+		C3.Behaviors.Flash.Acts.Flash,
 		C3.Plugins.Sprite.Cnds.IsBetweenAngles,
 		C3.Plugins.Sprite.Acts.SetFlipped,
 		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.System.Acts.AddVar,
+		C3.Behaviors.Pathfinding.Acts.FindPath,
+		C3.Plugins.Sprite.Exps.X,
+		C3.Plugins.Sprite.Exps.Y,
+		C3.Behaviors.Pathfinding.Cnds.OnPathFound,
+		C3.Behaviors.Pathfinding.Acts.StartMoving,
 		C3.Behaviors.Tween.Cnds.IsPlaying,
 		C3.Behaviors.Tween.Acts.TweenOneProperty,
-		C3.Plugins.Sprite.Exps.Y
+		C3.Plugins.Sprite.Cnds.CompareWidth,
+		C3.Plugins.Sprite.Cnds.PickParent,
+		C3.Plugins.Sprite.Cnds.CompareX,
+		C3.Plugins.System.Acts.RestartLayout,
+		C3.Plugins.Sprite.Acts.SetX,
+		C3.Plugins.System.Exps.dt,
+		C3.Plugins.System.Acts.Wait
 	];
 };
 self.C3_JsPropNameTable = [
 	{Sine: 0},
 	{player: 0},
+	{value: 0},
 	{"8Direction": 0},
 	{player_collision: 0},
 	{Keyboard: 0},
@@ -4354,12 +4444,23 @@ self.C3_JsPropNameTable = [
 	{splash: 0},
 	{uida: 0},
 	{coll: 0},
+	{id: 0},
 	{Tween: 0},
 	{coin: 0},
 	{coin_collision: 0},
 	{coin_ui: 0},
-	{coin2: 0},
+	{coin_ui_g: 0},
 	{coin_txt: 0},
+	{type: 0},
+	{Flash: 0},
+	{enemy: 0},
+	{Pathfinding: 0},
+	{en_shadow: 0},
+	{en_health: 0},
+	{splash_shadow: 0},
+	{hand: 0},
+	{player_health: 0},
+	{fader: 0},
 	{speed_booster: 0},
 	{bull_speed: 0},
 	{player_speed: 0}
@@ -4464,7 +4565,7 @@ function or(l, r)
 
 self.C3_ExpressionFuncs = [
 		() => 10,
-		() => "game",
+		() => "coin",
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
 			const f1 = p._GetNode(1).GetBoundMethod();
@@ -4489,6 +4590,11 @@ self.C3_ExpressionFuncs = [
 		},
 		p => {
 			const n0 = p._GetNode(0);
+			return () => C3.clamp(n0.ExpObject(), 0, 65);
+		},
+		() => "game",
+		p => {
+			const n0 = p._GetNode(0);
 			return () => n0.ExpObject();
 		},
 		p => {
@@ -4496,16 +4602,31 @@ self.C3_ExpressionFuncs = [
 			return () => f0(0, 1, 2, 3);
 		},
 		() => 0,
-		() => 90,
-		() => 190,
-		() => "anim",
 		p => {
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() - 10);
 		},
+		() => 0.1,
+		() => 90,
+		() => 190,
+		() => 0.3,
+		() => "anim",
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => f0(0.5, 1);
+		},
+		() => 2,
+		p => {
+			const n0 = p._GetNode(0);
+			const n1 = p._GetNode(1);
+			const f2 = p._GetNode(2).GetBoundMethod();
+			return () => C3.lerp(n0.ExpObject(), (n1.ExpObject() - 100), (6 * f2()));
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			const n1 = p._GetNode(1);
+			const f2 = p._GetNode(2).GetBoundMethod();
+			return () => C3.lerp(n0.ExpObject(), (n1.ExpObject() + 100), (6 * f2()));
 		}
 ];
 
