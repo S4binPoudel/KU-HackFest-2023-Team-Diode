@@ -3998,8 +3998,9 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.System.Cnds.TriggerOnce,
 		C3.Plugins.Sprite.Acts.AddChild,
 		C3.Plugins.Keyboard.Cnds.OnKey,
-		C3.Plugins.Sprite.Acts.SetAnim,
-		C3.Behaviors.EightDir.Cnds.IsMoving
+		C3.Plugins.Sprite.Acts.SetMirrored,
+		C3.Behaviors.EightDir.Cnds.IsMoving,
+		C3.Plugins.Sprite.Acts.SetAnim
 	];
 };
 self.C3_JsPropNameTable = [
@@ -4107,9 +4108,8 @@ function or(l, r)
 }
 
 self.C3_ExpressionFuncs = [
-		() => "walk_left",
-		() => "walk_right",
-		() => "walk_down"
+		() => "idle",
+		() => "walk_left"
 ];
 
 
