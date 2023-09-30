@@ -4711,6 +4711,7 @@ self.C3_JsPropNameTable = [
 	{up_health_btn: 0},
 	{next: 0},
 	{glow: 0},
+	{title_start: 0},
 	{speed_booster: 0},
 	{bull_speed: 0},
 	{player_speed: 0},
