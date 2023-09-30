@@ -4712,6 +4712,7 @@ self.C3_JsPropNameTable = [
 	{next: 0},
 	{glow: 0},
 	{title_start: 0},
+	{Text: 0},
 	{speed_booster: 0},
 	{bull_speed: 0},
 	{player_speed: 0},
@@ -4880,6 +4881,7 @@ self.C3_ExpressionFuncs = [
 		},
 		() => 0.1,
 		() => 2,
+		() => 3,
 		() => 90,
 		() => 190,
 		() => 0.3,
@@ -4908,7 +4910,6 @@ self.C3_ExpressionFuncs = [
 			const n0 = p._GetNode(0);
 			return () => n0.ExpInstVar();
 		},
-		() => 3,
 		() => "coin",
 		() => 25,
 		() => 100,
@@ -4942,6 +4943,9 @@ self.C3_ExpressionFuncs = [
 		() => 1149,
 		() => 600,
 		() => "7",
+		() => 189,
+		() => 543,
+		() => "5",
 		() => -3,
 		() => 150,
 		() => 0.8,
