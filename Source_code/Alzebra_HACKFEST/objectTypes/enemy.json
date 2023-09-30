@@ -1,0 +1,133 @@
+{
+	"name": "enemy",
+	"plugin-id": "Sprite",
+	"sid": 637641429427227,
+	"isGlobal": false,
+	"instanceVariables": [
+		{
+			"name": "type",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 391395555547530
+		},
+		{
+			"name": "rate",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 898884102732648
+		}
+	],
+	"behaviorTypes": [
+		{
+			"behaviorId": "Sin",
+			"name": "Sine",
+			"sid": 496017979709202
+		},
+		{
+			"behaviorId": "Flash",
+			"name": "Flash",
+			"sid": 203919218052133
+		}
+	],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 250,
+						"height": 384,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"imageSpriteId": 1820043,
+						"collisionPoly": {
+							"points": [
+								0.6135371179039302,
+								0.0014204545454545455,
+								0.6768558951965066,
+								0.05539772727272727,
+								0.9192139737991266,
+								0.9517045454545454,
+								0.34497816593886466,
+								0.9985795454545454,
+								0.05458515283842795,
+								0.9019886363636364,
+								0.019650655021834062,
+								0.36079545454545453
+							]
+						},
+						"useCollisionPoly": true,
+						"imagePoints": [
+							{
+								"name": "Image Point 1",
+								"x": 0.27666666666666667,
+								"y": 0.5574837310195228
+							},
+							{
+								"name": "Image Point 2",
+								"x": 0.5233333333333333,
+								"y": 0.6616052060737527
+							}
+						],
+						"duration": 1,
+						"tag": ""
+					},
+					{
+						"width": 250,
+						"height": 384,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"imageSpriteId": 6539329,
+						"collisionPoly": {
+							"points": [
+								0.980349344978166,
+								0.36079545454545453,
+								0.9454148471615721,
+								0.9019886363636364,
+								0.6550218340611353,
+								0.9985795454545454,
+								0.08078602620087338,
+								0.9517045454545454,
+								0.3231441048034934,
+								0.05539772727272727,
+								0.3864628820960698,
+								0.0014204545454545455
+							]
+						},
+						"useCollisionPoly": true,
+						"imagePoints": [
+							{
+								"name": "Image Point 1",
+								"x": 0.7166666666666667,
+								"y": 0.5488069414316703
+							},
+							{
+								"name": "Image Point 2",
+								"x": 0.6433333333333333,
+								"y": 0.6442516268980477
+							}
+						],
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 905947526511728,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 0
+			}
+		],
+		"subfolders": []
+	}
+}

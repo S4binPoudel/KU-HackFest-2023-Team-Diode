@@ -1,0 +1,351 @@
+{
+	"name": "level_mode",
+	"events": [
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "compare-eventvar",
+					"objectClass": "System",
+					"sid": 683719418881147,
+					"parameters": {
+						"variable": "layout_counter",
+						"comparison": 0,
+						"value": "1"
+					}
+				}
+			],
+			"actions": [],
+			"sid": 175724992159605,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "trigger-once-while-true",
+							"objectClass": "System",
+							"sid": 877280483924051
+						}
+					],
+					"actions": [],
+					"sid": 104388527331591,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "pick-random-instance",
+									"objectClass": "System",
+									"sid": 946871024149002,
+									"parameters": {
+										"object": "spawner"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "create-object",
+									"objectClass": "System",
+									"sid": 875114936436421,
+									"parameters": {
+										"object-to-create": "en_shadow",
+										"layer": "\"game\"",
+										"x": "spawner.X",
+										"y": "spawner.Y",
+										"create-hierarchy": true,
+										"template-name": "\"\""
+									}
+								}
+							],
+							"sid": 955027103095818
+						}
+					]
+				}
+			]
+		},
+		{
+			"eventType": "block",
+			"conditions": [],
+			"actions": [],
+			"sid": 341815071083615,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [],
+					"actions": [],
+					"sid": 939442568614791,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "enemy",
+									"sid": 911092552839075,
+									"parameters": {
+										"instance-variable": "type",
+										"comparison": 0,
+										"value": "1"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 295239126054675,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 454235770881656
+										}
+									],
+									"actions": [
+										{
+											"id": "spawn-another-object",
+											"objectClass": "enemy",
+											"sid": 306252640230546,
+											"parameters": {
+												"object": "hand",
+												"layer": "\"game\"",
+												"image-point": "1",
+												"create-hierarchy": false
+											}
+										},
+										{
+											"id": "add-child",
+											"objectClass": "enemy",
+											"sid": 900561716996305,
+											"parameters": {
+												"child": "hand",
+												"transform-x": true,
+												"transform-y": true,
+												"transform-w": false,
+												"transform-h": false,
+												"transform-a": false,
+												"transform-o": true,
+												"transform-z-elevation": true,
+												"transform-visibility": true,
+												"destroy-with-parent": true
+											}
+										},
+										{
+											"id": "set-magnitude",
+											"objectClass": "hand",
+											"sid": 286872565640609,
+											"behaviorType": "Sine",
+											"parameters": {
+												"magnitude": "-3"
+											}
+										},
+										{
+											"id": "move-to-bottom",
+											"objectClass": "hand",
+											"sid": 184386786375156
+										},
+										{
+											"id": "spawn-another-object",
+											"objectClass": "enemy",
+											"sid": 695433977268899,
+											"parameters": {
+												"object": "hand",
+												"layer": "\"game\"",
+												"image-point": "2",
+												"create-hierarchy": false
+											}
+										},
+										{
+											"id": "add-child",
+											"objectClass": "enemy",
+											"sid": 486411363386810,
+											"parameters": {
+												"child": "hand",
+												"transform-x": true,
+												"transform-y": true,
+												"transform-w": false,
+												"transform-h": false,
+												"transform-a": false,
+												"transform-o": true,
+												"transform-z-elevation": true,
+												"transform-visibility": true,
+												"destroy-with-parent": true
+											}
+										},
+										{
+											"id": "set-magnitude",
+											"objectClass": "hand",
+											"sid": 613228633519522,
+											"behaviorType": "Sine",
+											"parameters": {
+												"magnitude": "3"
+											}
+										}
+									],
+									"sid": 658701751269134
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "enemy",
+									"sid": 967769483886007,
+									"parameters": {
+										"instance-variable": "type",
+										"comparison": 0,
+										"value": "2"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 401026980555203,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 463625877358655
+										}
+									],
+									"actions": [
+										{
+											"id": "spawn-another-object",
+											"objectClass": "enemy",
+											"sid": 828341682408107,
+											"parameters": {
+												"object": "en_gun",
+												"layer": "\"game\"",
+												"image-point": "2",
+												"create-hierarchy": false
+											}
+										},
+										{
+											"id": "move-to-object",
+											"objectClass": "en_gun",
+											"sid": 309494091448130,
+											"parameters": {
+												"where": "in-front",
+												"object": "enemy"
+											}
+										},
+										{
+											"id": "add-child",
+											"objectClass": "enemy",
+											"sid": 624251084986267,
+											"parameters": {
+												"child": "en_gun",
+												"transform-x": true,
+												"transform-y": true,
+												"transform-w": false,
+												"transform-h": false,
+												"transform-a": false,
+												"transform-o": true,
+												"transform-z-elevation": false,
+												"transform-visibility": true,
+												"destroy-with-parent": true
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "enemy",
+											"sid": 469134324425796,
+											"parameters": {
+												"instance-variable": "rate",
+												"value": "0.8"
+											}
+										}
+									],
+									"sid": 378071883423102
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "enemy",
+									"sid": 842612140092189,
+									"parameters": {
+										"instance-variable": "type",
+										"comparison": 0,
+										"value": "3"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 468793664166262,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "trigger-once-while-true",
+											"objectClass": "System",
+											"sid": 266977837422795
+										}
+									],
+									"actions": [
+										{
+											"id": "spawn-another-object",
+											"objectClass": "enemy",
+											"sid": 262867863126684,
+											"parameters": {
+												"object": "en_gun2",
+												"layer": "\"game\"",
+												"image-point": "2",
+												"create-hierarchy": false
+											}
+										},
+										{
+											"id": "move-to-object",
+											"objectClass": "en_gun2",
+											"sid": 360757434103184,
+											"parameters": {
+												"where": "in-front",
+												"object": "enemy"
+											}
+										},
+										{
+											"id": "add-child",
+											"objectClass": "enemy",
+											"sid": 333097309902138,
+											"parameters": {
+												"child": "en_gun2",
+												"transform-x": true,
+												"transform-y": true,
+												"transform-w": false,
+												"transform-h": false,
+												"transform-a": false,
+												"transform-o": true,
+												"transform-z-elevation": true,
+												"transform-visibility": true,
+												"destroy-with-parent": true
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "enemy",
+											"sid": 717576077161343,
+											"parameters": {
+												"instance-variable": "rate",
+												"value": "0.2"
+											}
+										}
+									],
+									"sid": 910081683015810
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"sid": 459388480150822
+}

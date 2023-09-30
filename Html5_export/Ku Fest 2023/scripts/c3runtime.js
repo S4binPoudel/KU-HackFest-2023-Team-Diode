@@ -4543,6 +4543,7 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Sprite.Acts.SubInstanceVar,
 		C3.Plugins.Sprite.Cnds.CompareY,
 		C3.Plugins.System.Acts.SubVar,
+		C3.Plugins.Sprite.Exps.AnimationName,
 		C3.Behaviors.Sin.Acts.SetMagnitude
 	];
 };
@@ -4590,11 +4591,13 @@ self.C3_JsPropNameTable = [
 	{bullet2: 0},
 	{en_gun2: 0},
 	{spawner: 0},
-	{enemy_clone: 0},
 	{health: 0},
 	{block: 0},
 	{block_txt: 0},
 	{block2: 0},
+	{bgg: 0},
+	{border: 0},
+	{enemy_clone: 0},
 	{speed_booster: 0},
 	{bull_speed: 0},
 	{player_speed: 0},
@@ -4801,6 +4804,10 @@ self.C3_ExpressionFuncs = [
 		() => 100,
 		() => 75,
 		() => 50,
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0("1", "2", "3", "4", "5", "6", "7", "8", "9");
+		},
 		() => -3,
 		() => 0.8,
 		() => 0.2

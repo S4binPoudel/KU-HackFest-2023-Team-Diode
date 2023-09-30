@@ -1,0 +1,27 @@
+{
+	"name": "fader",
+	"plugin-id": "TiledBg",
+	"sid": 548841384144664,
+	"isGlobal": false,
+	"instanceVariables": [],
+	"behaviorTypes": [
+		{
+			"behaviorId": "Fade",
+			"name": "Fade",
+			"sid": 482973734567279
+		}
+	],
+	"effectTypes": [],
+	"image": {
+		"width": 250,
+		"height": 250,
+		"originX": 0.5,
+		"originY": 0.5,
+		"originalSource": "",
+		"exportFormat": "lossless",
+		"exportQuality": 0.8,
+		"imageSpriteId": 9094425,
+		"useCollisionPoly": true,
+		"tag": ""
+	}
+}
