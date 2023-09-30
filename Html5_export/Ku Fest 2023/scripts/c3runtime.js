@@ -4608,6 +4608,7 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.TiledBg.Acts.Destroy,
 		C3.Plugins.System.Cnds.Compare,
 		C3.Plugins.Sprite.Exps.Count,
+		C3.Plugins.Sprite.Cnds.OnDestroyed,
 		C3.Plugins.Sprite.Cnds.IsAnimPlaying,
 		C3.Plugins.Sprite.Acts.SetSize,
 		C3.Plugins.Sprite.Exps.Height,
@@ -4709,6 +4710,7 @@ self.C3_JsPropNameTable = [
 	{up_speed_btn: 0},
 	{up_health_btn: 0},
 	{next: 0},
+	{glow: 0},
 	{speed_booster: 0},
 	{bull_speed: 0},
 	{player_speed: 0},
@@ -4719,6 +4721,7 @@ self.C3_JsPropNameTable = [
 	{box_value: 0},
 	{timee: 0},
 	{game_end: 0},
+	{checker: 0},
 	{sequence: 0},
 	{sequencer2: 0}
 ];
@@ -4875,6 +4878,7 @@ self.C3_ExpressionFuncs = [
 			return () => (n0.ExpObject() - 10);
 		},
 		() => 0.1,
+		() => 2,
 		() => 90,
 		() => 190,
 		() => 0.3,
@@ -4887,7 +4891,6 @@ self.C3_ExpressionFuncs = [
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => f0(0.5, 1);
 		},
-		() => 2,
 		p => {
 			const n0 = p._GetNode(0);
 			const n1 = p._GetNode(1);
@@ -4939,6 +4942,7 @@ self.C3_ExpressionFuncs = [
 		() => 600,
 		() => "7",
 		() => -3,
+		() => 150,
 		() => 0.8,
 		() => 0.2,
 		() => "walk_down",
